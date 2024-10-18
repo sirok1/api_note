@@ -7,149 +7,164 @@ import (
 	"strconv"
 )
 
-// Note представляет заметку
-type Note struct {
-	ID      int    `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
+// Product представляет продукт 
+type Product struct {
+    ID          int
+    ImageURL    string
+    Name        string
+    Description string
+    Price       float64
 }
 
-// Пример списка заметок
-var notes = []Note{
-	{ID: 1, Title: "First Note", Content: "This is the content of the first note."},
-	{ID: 2, Title: "Second Note", Content: "This is the content of the second note."},
-	{ID: 3, Title: "Third Note", Content: "This is the content of the third note."},
+// Пример списка продуктов
+var products = []Product{
+    {ID: 1, ImageURL: "https://example.com/image1.jpg", Name: "Product One", Description: "This is the first product description.", Price: 19.99},
+    {ID: 2, ImageURL: "https://example.com/image2.jpg", Name: "Product Two", Description: "This is the second product description.", Price: 29.99},
+    {ID: 3, ImageURL: "https://example.com/image3.jpg", Name: "Product Three", Description: "This is the third product description.", Price: 39.99},
+    {ID: 4, ImageURL: "https://example.com/image4.jpg", Name: "Product Four", Description: "This is the fourth product description.", Price: 49.99},
+    {ID: 5, ImageURL: "https://example.com/image5.jpg", Name: "Product Five", Description: "This is the fifth product description.", Price: 59.99},
+    {ID: 6, ImageURL: "https://example.com/image6.jpg", Name: "Product Six", Description: "This is the sixth product description.", Price: 15.99},
+    {ID: 7, ImageURL: "https://example.com/image7.jpg", Name: "Product Seven", Description: "This is the seventh product description.", Price: 25.99},
+    {ID: 8, ImageURL: "https://example.com/image8.jpg", Name: "Product Eight", Description: "This is the eighth product description.", Price: 35.99},
+    {ID: 9, ImageURL: "https://example.com/image9.jpg", Name: "Product Nine", Description: "This is the ninth product description.", Price: 45.99},
+    {ID: 10, ImageURL: "https://example.com/image10.jpg", Name: "Product Ten", Description: "This is the tenth product description.", Price: 55.99},
+    {ID: 11, ImageURL: "https://example.com/image11.jpg", Name: "Product Eleven", Description: "This is the eleventh product description.", Price: 22.49},
+    {ID: 12, ImageURL: "https://example.com/image12.jpg", Name: "Product Twelve", Description: "This is the twelfth product description.", Price: 32.49},
+    {ID: 13, ImageURL: "https://example.com/image13.jpg", Name: "Product Thirteen", Description: "This is the thirteenth product description.", Price: 42.49},
+    {ID: 14, ImageURL: "https://example.com/image14.jpg", Name: "Product Fourteen", Description: "This is the fourteenth product description.", Price: 52.49},
+    {ID: 15, ImageURL: "https://example.com/image15.jpg", Name: "Product Fifteen", Description: "This is the fifteenth product description.", Price: 62.49},
 }
 
-// обработчик для GET-запроса, возвращает список заметок
-func getNotesHandler(w http.ResponseWriter, r *http.Request) {
+
+// обработчик для GET-запроса, возвращает список продуктов
+func getProductsHandler(w http.ResponseWriter, r *http.Request) {
 	// Устанавливаем заголовки для правильного формата JSON
 	w.Header().Set("Content-Type", "application/json")
 	// Преобразуем список заметок в JSON
-	json.NewEncoder(w).Encode(notes)
+	json.NewEncoder(w).Encode(Products)
 }
 
-// обработчик для POST-запроса, добавляет заметку
-func createNoteHandler(w http.ResponseWriter, r *http.Request) {
+// обработчик для POST-запроса, добавляет продукт
+func createProductHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
 
-	var newNote Note
-	err := json.NewDecoder(r.Body).Decode(&newNote)
+	var newProduct Product
+	err := json.NewDecoder(r.Body).Decode(&newProduct)
 	if err != nil {
 		fmt.Println("Error decoding request body:", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	fmt.Printf("Received new note: %+v\n", newNote)
+	fmt.Printf("Received new Product: %+v\n", newProduct)
 
-	newNote.ID = len(notes) + 1
-	notes = append(notes, newNote)
+	newProduct.ID = len(Products) + 1
+	products = append(Products, newProduct)
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newNote)
+	json.NewEncoder(w).Encode(newProduct)
 }
 
-//Добавление маршрута для получения одной заметки
+//Добавление маршрута для получения одного продукта
 
-func getNoteByIDHandler(w http.ResponseWriter, r *http.Request) {
+func getProductByIDHandler(w http.ResponseWriter, r *http.Request) {
 	// Получаем ID из URL
-	idStr := r.URL.Path[len("/notes/"):]
+	idStr := r.URL.Path[len("/Products/"):]
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid note ID", http.StatusBadRequest)
+		http.Error(w, "Invalid Product ID", http.StatusBadRequest)
 		return
 	}
 
-	// Ищем заметку с данным ID
-	for _, note := range notes {
-		if note.ID == id {
+	// Ищем продукт с данным ID
+	for _, Product := range Products {
+		if Product.ID == id {
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(note)
+			json.NewEncoder(w).Encode(Product)
 			return
 		}
 	}
 
-	// Если заметка не найдена
-	http.Error(w, "Note not found", http.StatusNotFound)
+	// Если продукт не найден
+	http.Error(w, "Product not found", http.StatusNotFound)
 }
 
-// удаление заметок по id
-func deleteNoteHandler(w http.ResponseWriter, r *http.Request) {
+// удаление продукта по id
+func deleteProductHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
 
 	// Получаем ID из URL
-	idStr := r.URL.Path[len("/notes/delete/"):]
+	idStr := r.URL.Path[len("/Products/delete/"):]
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid note ID", http.StatusBadRequest)
+		http.Error(w, "Invalid Product ID", http.StatusBadRequest)
 		return
 	}
 
-	// Ищем и удаляем заметку с данным ID
-	for i, note := range notes {
-		if note.ID == id {
-			// Удаляем заметку из среза
-			notes = append(notes[:i], notes[i+1:]...)
+	// Ищем и удаляем продукт с данным ID
+	for i, Product := range Products {
+		if Product.ID == id {
+			// Удаляем продукт из среза
+			Products = append(Products[:i], Products[i+1:]...)
 			w.WriteHeader(http.StatusNoContent) // Успешное удаление, нет содержимого
 			return
 		}
 	}
 
-	// Если заметка не найдена
-	http.Error(w, "Note not found", http.StatusNotFound)
+	// Если продукт не найден
+	http.Error(w, "Product not found", http.StatusNotFound)
 }
 
-// Обновление заметок по id
-func updateNoteHandler(w http.ResponseWriter, r *http.Request) {
+// Обновление продукта по id
+func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
 
 	// Получаем ID из URL
-	idStr := r.URL.Path[len("/notes/update/"):]
+	idStr := r.URL.Path[len("/Products/update/"):]
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid note ID", http.StatusBadRequest)
+		http.Error(w, "Invalid Product ID", http.StatusBadRequest)
 		return
 	}
 
-	// Декодируем обновлённые данные заметки
-	var updatedNote Note
-	err = json.NewDecoder(r.Body).Decode(&updatedNote)
+	// Декодируем обновлённые данные продукта
+	var updatedProduct Product
+	err = json.NewDecoder(r.Body).Decode(&updatedProduct)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// Ищем заметку для обновления
-	for i, note := range notes {
-		if note.ID == id {
-			notes[i].Title = updatedNote.Title
-			notes[i].Content = updatedNote.Content
+	// Ищем продукт для обновления
+	for i, Product := range products {
+		if Product.ID == id {
+			products[i].Title = updatedProduct.Title
+			products[i].Content = updatedProduct.Content
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(notes[i])
+			json.NewEncoder(w).Encode(Products[i])
 			return
 		}
 	}
 
-	// Если заметка не найдена
-	http.Error(w, "Note not found", http.StatusNotFound)
+	// Если продукт не найден
+	http.Error(w, "Product not found", http.StatusNotFound)
 }
 
 func main() {
-	http.HandleFunc("/notes", getNotesHandler)           // Получить все заметки
-	http.HandleFunc("/notes/create", createNoteHandler)  // Создать заметку
-	http.HandleFunc("/notes/", getNoteByIDHandler)       // Получить заметку по ID
-	http.HandleFunc("/notes/update/", updateNoteHandler) // Обновить заметку
-	http.HandleFunc("/notes/delete/", deleteNoteHandler) // Удалить заметку
+	http.HandleFunc("/Products", getProductsHandler)           // Получить все продукты
+	http.HandleFunc("/Products/create", createProductHandler)  // Создать продукт
+	http.HandleFunc("/Products/", getProductByIDHandler)       // Получить продукт по ID
+	http.HandleFunc("/Products/update/", updateProductHandler) // Обновить продукт
+	http.HandleFunc("/Products/delete/", deleteProductHandler) // Удалить продукт
 
 	fmt.Println("Server is running on port 8080!")
 	http.ListenAndServe(":8080", nil)
