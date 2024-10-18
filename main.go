@@ -163,11 +163,11 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/Products", getProductsHandler)           // Получить все продукты
-	http.HandleFunc("/Products/create", createProductHandler)  // Создать продукт
-	http.HandleFunc("/Products/", getProductByIDHandler)       // Получить продукт по ID
-	http.HandleFunc("/Products/update/", updateProductHandler) // Обновить продукт
-	http.HandleFunc("/Products/delete/", deleteProductHandler) // Удалить продукт
+	http.HandleFunc("/products", getProductsHandler)           // Получить все продукты
+	http.HandleFunc("/products/create", createProductHandler)  // Создать продукт
+	http.HandleFunc("/products/", getProductByIDHandler)       // Получить продукт по ID
+	http.HandleFunc("/products/update/", updateProductHandler) // Обновить продукт
+	http.HandleFunc("/products/delete/", deleteProductHandler) // Удалить продукт
 
 	fmt.Println("Server is running on port 8080!")
 	http.ListenAndServe(":8080", nil)
