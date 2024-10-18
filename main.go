@@ -18,21 +18,21 @@ type Product struct {
 
 // Пример списка продуктов
 var products = []Product{
-	{ID: 1, ImageURL: "https://example.com/image1.jpg", Name: "Product One", Description: "This is the first product description.", Price: 19.99},
-	{ID: 2, ImageURL: "https://example.com/image2.jpg", Name: "Product Two", Description: "This is the second product description.", Price: 29.99},
-	{ID: 3, ImageURL: "https://example.com/image3.jpg", Name: "Product Three", Description: "This is the third product description.", Price: 39.99},
-	{ID: 4, ImageURL: "https://example.com/image4.jpg", Name: "Product Four", Description: "This is the fourth product description.", Price: 49.99},
-	{ID: 5, ImageURL: "https://example.com/image5.jpg", Name: "Product Five", Description: "This is the fifth product description.", Price: 59.99},
-	{ID: 6, ImageURL: "https://example.com/image6.jpg", Name: "Product Six", Description: "This is the sixth product description.", Price: 15.99},
-	{ID: 7, ImageURL: "https://example.com/image7.jpg", Name: "Product Seven", Description: "This is the seventh product description.", Price: 25.99},
-	{ID: 8, ImageURL: "https://example.com/image8.jpg", Name: "Product Eight", Description: "This is the eighth product description.", Price: 35.99},
-	{ID: 9, ImageURL: "https://example.com/image9.jpg", Name: "Product Nine", Description: "This is the ninth product description.", Price: 45.99},
-	{ID: 10, ImageURL: "https://example.com/image10.jpg", Name: "Product Ten", Description: "This is the tenth product description.", Price: 55.99},
-	{ID: 11, ImageURL: "https://example.com/image11.jpg", Name: "Product Eleven", Description: "This is the eleventh product description.", Price: 22.49},
-	{ID: 12, ImageURL: "https://example.com/image12.jpg", Name: "Product Twelve", Description: "This is the twelfth product description.", Price: 32.49},
-	{ID: 13, ImageURL: "https://example.com/image13.jpg", Name: "Product Thirteen", Description: "This is the thirteenth product description.", Price: 42.49},
-	{ID: 14, ImageURL: "https://example.com/image14.jpg", Name: "Product Fourteen", Description: "This is the fourteenth product description.", Price: 52.49},
-	{ID: 15, ImageURL: "https://example.com/image15.jpg", Name: "Product Fifteen", Description: "This is the fifteenth product description.", Price: 62.49},
+	{ID: 1, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-r/wc1000/7147386879.jpg", Name: "Acer Nitro V ANV15-41", Description: "Acer Nitro V ANV15-41, AMD Ryzen 7 7735HS Игровой ноутбук 15.6\", AMD Ryzen 7 7735HS, RAM 16 ГБ, SSD 512 ГБ, NVIDIA GeForce RTX 3050 (6 Гб), Без системы, (NH.QSHER.002), черный, Русская раскладка", Price: 81690},
+	{ID: 2, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-g/wc1000/7050006328.jpg", Name: "Lenovo LOQ 15IAX9", Description: "Lenovo LOQ 15IAX9 Игровой ноутбук 15.6\", Intel Core i5-12450HX, RAM 16 ГБ, SSD 512 ГБ, NVIDIA GeForce RTX 4050 для ноутбуков (6 Гб), Без системы, (83GS00EPRK), серебристый, Русская раскладка.", Price: 84540},
+	{ID: 3, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-q/wc1000/7126229138.jpg", Name: "Lenovo LOQ 15IRX9", Description: "Lenovo LOQ 15IRX9 Игровой ноутбук 15.6\", Intel Core i7-13650HX, RAM 16 ГБ, SSD 1024 ГБ, NVIDIA GeForce RTX 4060 (8 Гб), Без системы, (83DV00NJRK), серый, Русская раскладка", Price: 104490},
+	{ID: 4, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-a/wc1000/7126230382.jpg", Name: "Lenovo Legion 5 16IRX9", Description: "Lenovo Legion 5 16IRX9 Игровой ноутбук 16\", Intel Core i7-14650HX, RAM 32 ГБ, SSD 1024 ГБ, NVIDIA GeForce RTX 4070 для ноутбуков (8 Гб), Без системы, (83DG00E0RK), серебристый, Русская раскладка.", Price: 151990},
+	{ID: 5, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-7/wc1000/7076666203.jpg", Name: "Ninkear Super G16 Pro", Description: "Ninkear Super G16 Pro Игровой ноутбук 16\", Intel Core i9-10885H, RAM 32 ГБ, SSD 1024 ГБ, NVIDIA GeForce GTX 1650 Ti (4 Гб), Windows Pro, серый металлик, Русская раскладка", Price: 77732},
+	{ID: 6, ImageURL: "https://ir.ozone.ru/s3/multimedia-n/wc1000/6834200027.jpg", Name: "VETAS 2024 ", Description: "VETAS 2024 Новое Последний выпуск Windows была активирована Игровой ноутбук 15.6\", Intel Celeron N5095, RAM 16 ГБ, SSD 512 ГБ, Intel UHD Graphics 750, Windows Pro, (N5905), серебристый, Русская раскладка.", Price: 21473},
+	{ID: 7, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-c/wc1000/7152362724.jpg", Name: "N4000", Description: "N4000 Игровой ноутбук 15\", Intel Celeron N4000C, RAM 16 ГБ, SSD, Windows Pro, (M66-1), черно-серый, прозрачный, Русская раскладка", Price: 16504},
+	{ID: 8, ImageURL: "https://ir.ozone.ru/s3/multimedia-v/wc1000/6776590459.jpg", Name: "UZZAI Lenovo Por x50", Description: "UZZAI Lenovo Por x50 Игровой ноутбук 15.6\", Intel Celeron N5095, RAM 24 ГБ, SSD, Intel HD Graphics 610, Windows Pro, (SC-976), черный, оливковый, Русская раскладка", Price: 23260},
+	{ID: 9, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-7/wc1000/7034232355.jpg", Name: "TANSHI X15F RTX3050", Description: "TANSHI X15F RTX3050, RAM и SSD с возможностью расширения, новинка 2024 года Игровой ноутбук 15.6\", AMD Ryzen 5 6600H, RAM 16 ГБ, SSD 512 ГБ, NVIDIA GeForce RTX 3050 для ноутбуков (4 Гб), Linux, черный, Русская раскладка", Price: 71780},
+	{ID: 10, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-1/wc1000/7152993169.jpg", Name: "Lenovo Legion Pro 5 16IRX9", Description: "Lenovo Legion Pro 5 16IRX9 Игровой ноутбук 16\", Intel Core i7-14650HX, RAM 32 ГБ, SSD 1024 ГБ, NVIDIA GeForce RTX 4060 (8 Гб), Без системы, (83DF00E3RK), серый, Русская раскладка", Price: 182900},
+	{ID: 11, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-y/wc1000/7142706394.jpg", Name: "VANWIN N156", Description: "VANWIN N156 Игровой ноутбук 15.6\", Intel N95, RAM 16 ГБ, SSD 512 ГБ, Intel UHD Graphics 770, Windows Pro, (ноутбук для работы и учебы), черный, Русская раскладка", Price: 32500},
+	{ID: 12, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-4/wc1000/7152993172.jpg", Name: "Lenovo Legion 7 16IRX9", Description: "Lenovo Legion 7 16IRX9 Игровой ноутбук 16\", Intel Core i7-14700HX, RAM 32 ГБ, SSD 1024 ГБ, NVIDIA GeForce RTX 4060 (8 Гб), Без системы, (83FD007DRK), черный, Русская раскладка", Price: 210990},
+	{ID: 13, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-a/wc1000/7057184662.jpg", Name: "ASUS TUF Gaming A15 FA506NC-HN065", Description: "ASUS TUF Gaming A15 FA506NC-HN065 Игровой ноутбук, RAM 16 ГБ, черный", Price: 73566},
+	{ID: 14, ImageURL: "https://ir.ozone.ru/s3/multimedia-r/wc1000/6834200067.jpg", Name: "VETAS 2024", Description: "VETAS 2024 Новое Последний выпуск Windows активирована Игровой ноутбук 15.6\", Intel Celeron N5095, RAM 32 ГБ, SSD 1024 ГБ, Intel UHD Graphics 750, Windows Pro, ( N5095), серебристый, Русская раскладка", Price: 31790},
+	{ID: 15, ImageURL: "https://ir.ozone.ru/s3/multimedia-1-5/wc1000/7134536489.jpg", Name: "Lenovo LOQ 3 Series 15IAX9", Description: "Lenovo LOQ 3 Series 15IAX9 Игровой ноутбук 15.6\", Intel Core i5-12450HX, RAM 16 ГБ, SSD, NVIDIA GeForce RTX 4050 для ноутбуков (6 Гб), Без системы, (LOQ 3 Series 15IAX9), серый, Английская раскладка", Price: 112900},
 }
 
 // обработчик для GET-запроса, возвращает список продуктов
