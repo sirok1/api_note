@@ -59,8 +59,14 @@ func createProductHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Printf("Received new Product: %+v\n", newProduct)
+	var lastID int = len(products)
 
-	newProduct.ID = len(products) + 1
+	for _, productItem := range products {
+		if productItem.ID > lastID {
+			lastID = productItem.ID
+		}
+	}
+	newProduct.ID = lastID + 1
 	products = append(products, newProduct)
 
 	w.Header().Set("Content-Type", "application/json")
