@@ -196,12 +196,24 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, newOrder := range newOrders {
+		var productExists bool
+		err = tx.QueryRow("SELECT EXISTS(SELECT 1 FROM products WHERE id=$1)", newOrder.ProductID).Scan(&productExists)
+		if err != nil {
+			tx.Rollback()
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if !productExists {
+			tx.Rollback()
+			http.Error(w, fmt.Sprintf("Product ID %s does not exist", newOrder.ProductID), http.StatusBadRequest)
+			return
+		}
+
 		newOrder.ID = time.Now().String()
 		newOrder.CreatedAt = time.Now()
 		_, err = tx.Exec("INSERT INTO orders (id, product_id, quantity, total, created_at) VALUES ($1, $2, $3, $4, $5)",
 			newOrder.ID, newOrder.ProductID, newOrder.Quantity, newOrder.Total, newOrder.CreatedAt)
 		if err != nil {
-			fmt.Printf("Error inserting new order: %v\n", err)
 			tx.Rollback()
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
