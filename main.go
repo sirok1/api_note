@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"os"
 	"time"
@@ -214,7 +215,15 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		newOrder.ID = fmt.Sprintf("%d", time.Now().Unix())
+		timestamp := fmt.Sprintf("%d", time.Now().Unix())
+
+		// Инициализируем генератор случайных чисел
+		rand.Seed(time.Now().UnixNano())
+
+		// Генерируем случайную цифру от 0 до 9
+		randomDigit := rand.Intn(10)
+
+		newOrder.ID = fmt.Sprintf("%s%d", timestamp, randomDigit)
 		newOrder.CreatedAt = time.Now()
 		_, err = tx.Exec("INSERT INTO orders (id, product_id, quantity, total, created_at) VALUES ($1, $2, $3, $4, $5)",
 			newOrder.ID, newOrder.ProductID, newOrder.Quantity, newOrder.Total, newOrder.CreatedAt)
