@@ -186,6 +186,7 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	fmt.Printf("Decoded new orders: %+v\n", newOrders)
 
 	tx, err := db.Begin()
