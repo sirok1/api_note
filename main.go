@@ -35,13 +35,17 @@ func initDB() {
 		os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_NAME"), os.Getenv("DB_PASSWORD"))
 	db, err = sql.Open("postgres", connStr)
 	if err != nil {
+		fmt.Printf("Error connecting to database: %v\n", err)
 		panic(err)
 	}
+	fmt.Println("Database connection initialized")
 }
 
 func getProductsHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("getProductsHandler called")
 	rows, err := db.Query("SELECT id, image_url, name, description, price FROM products")
 	if err != nil {
+		fmt.Printf("Error querying products: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -51,6 +55,7 @@ func getProductsHandler(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var p Product
 		if err := rows.Scan(&p.ID, &p.ImageURL, &p.Name, &p.Description, &p.Price); err != nil {
+			fmt.Printf("Error scanning product: %v\n", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -59,10 +64,13 @@ func getProductsHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(products)
+	fmt.Println("getProductsHandler completed successfully")
 }
 
 func createProductHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("createProductHandler called")
 	if r.Method != http.MethodPost {
+		fmt.Println("Invalid request method for createProductHandler")
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
@@ -70,6 +78,7 @@ func createProductHandler(w http.ResponseWriter, r *http.Request) {
 	var newProduct Product
 	err := json.NewDecoder(r.Body).Decode(&newProduct)
 	if err != nil {
+		fmt.Printf("Error decoding new product: %v\n", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -78,23 +87,28 @@ func createProductHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = db.Exec("INSERT INTO products (id, image_url, name, description, price) VALUES ($1, $2, $3, $4, $5)",
 		newProduct.ID, newProduct.ImageURL, newProduct.Name, newProduct.Description, newProduct.Price)
 	if err != nil {
+		fmt.Printf("Error inserting new product: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newProduct)
+	fmt.Println("createProductHandler completed successfully")
 }
 
 func getProductByIDHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("getProductByIDHandler called")
 	idStr := r.URL.Path[len("/products/"):]
 
 	var p Product
 	err := db.QueryRow("SELECT id, image_url, name, description, price FROM products WHERE id = $1", idStr).Scan(&p.ID, &p.ImageURL, &p.Name, &p.Description, &p.Price)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			fmt.Printf("Product not found: %v\n", idStr)
 			http.Error(w, "Product not found", http.StatusNotFound)
 		} else {
+			fmt.Printf("Error querying product by ID: %v\n", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
@@ -102,10 +116,13 @@ func getProductByIDHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(p)
+	fmt.Println("getProductByIDHandler completed successfully")
 }
 
 func deleteProductHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("deleteProductHandler called")
 	if r.Method != http.MethodDelete {
+		fmt.Println("Invalid request method for deleteProductHandler")
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
@@ -114,15 +131,19 @@ func deleteProductHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err := db.Exec("DELETE FROM products WHERE id = $1", idStr)
 	if err != nil {
+		fmt.Printf("Error deleting product: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+	fmt.Println("deleteProductHandler completed successfully")
 }
 
 func updateProductHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("updateProductHandler called")
 	if r.Method != http.MethodPut {
+		fmt.Println("Invalid request method for updateProductHandler")
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
@@ -132,6 +153,7 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 	var updatedProduct Product
 	err := json.NewDecoder(r.Body).Decode(&updatedProduct)
 	if err != nil {
+		fmt.Printf("Error decoding updated product: %v\n", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -139,17 +161,21 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = db.Exec("UPDATE products SET image_url = $1, name = $2, description = $3, price = $4 WHERE id = $5",
 		updatedProduct.ImageURL, updatedProduct.Name, updatedProduct.Description, updatedProduct.Price, idStr)
 	if err != nil {
+		fmt.Printf("Error updating product: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(updatedProduct)
+	fmt.Println("updateProductHandler completed successfully")
 }
 
 // обработчик для создания заказов
 func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("createOrdersHandler called")
 	if r.Method != http.MethodPost {
+		fmt.Println("Invalid request method for createOrdersHandler")
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
@@ -157,12 +183,14 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	var newOrders []Order
 	err := json.NewDecoder(r.Body).Decode(&newOrders)
 	if err != nil {
+		fmt.Printf("Error decoding new orders: %v\n", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	tx, err := db.Begin()
 	if err != nil {
+		fmt.Printf("Error beginning transaction: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -173,6 +201,7 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 		_, err = tx.Exec("INSERT INTO orders (id, product_id, quantity, total, created_at) VALUES ($1, $2, $3, $4, $5)",
 			newOrder.ID, newOrder.ProductID, newOrder.Quantity, newOrder.Total, newOrder.CreatedAt)
 		if err != nil {
+			fmt.Printf("Error inserting new order: %v\n", err)
 			tx.Rollback()
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -181,18 +210,22 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = tx.Commit()
 	if err != nil {
+		fmt.Printf("Error committing transaction: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newOrders)
+	fmt.Println("createOrdersHandler completed successfully")
 }
 
 // обработчик для получения всех заказов
 func getOrdersHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("getOrdersHandler called")
 	rows, err := db.Query("SELECT id, product_id, quantity, total, created_at FROM orders")
 	if err != nil {
+		fmt.Printf("Error querying orders: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -202,6 +235,7 @@ func getOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var o Order
 		if err := rows.Scan(&o.ID, &o.ProductID, &o.Quantity, &o.Total, &o.CreatedAt); err != nil {
+			fmt.Printf("Error scanning order: %v\n", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -210,18 +244,22 @@ func getOrdersHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(orders)
+	fmt.Println("getOrdersHandler completed successfully")
 }
 
 // обработчик для получения заказа по ID
 func getOrderByIDHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("getOrderByIDHandler called")
 	idStr := r.URL.Path[len("/orders/"):]
 
 	var o Order
 	err := db.QueryRow("SELECT id, product_id, quantity, total, created_at FROM orders WHERE id = $1", idStr).Scan(&o.ID, &o.ProductID, &o.Quantity, &o.Total, &o.CreatedAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			fmt.Printf("Order not found: %v\n", idStr)
 			http.Error(w, "Order not found", http.StatusNotFound)
 		} else {
+			fmt.Printf("Error querying order by ID: %v\n", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
@@ -229,9 +267,11 @@ func getOrderByIDHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(o)
+	fmt.Println("getOrderByIDHandler completed successfully")
 }
 
 func main() {
+	fmt.Println("Initializing database connection")
 	initDB()
 	defer db.Close()
 
