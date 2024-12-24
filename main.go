@@ -180,6 +180,7 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var newOrders []Order
+	fmt.Printf("Create orders request body: %+v\n", r.Body)
 	err := json.NewDecoder(r.Body).Decode(&newOrders)
 	if err != nil {
 		fmt.Printf("Error decoding new orders: %v\n", err)
