@@ -171,7 +171,6 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("updateProductHandler completed successfully")
 }
 
-// обработчик для создания заказов
 func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("createOrdersHandler called")
 	if r.Method != http.MethodPost {
@@ -187,6 +186,7 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	fmt.Printf("Decoded new orders: %+v\n", newOrders)
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -194,16 +194,19 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	fmt.Println("Transaction started")
 
 	for _, newOrder := range newOrders {
 		var productExists bool
 		err = tx.QueryRow("SELECT EXISTS(SELECT 1 FROM products WHERE id=$1)", newOrder.ProductID).Scan(&productExists)
 		if err != nil {
+			fmt.Printf("Error checking if product exists: %v\n", err)
 			tx.Rollback()
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		if !productExists {
+			fmt.Printf("Product ID %s does not exist\n", newOrder.ProductID)
 			tx.Rollback()
 			http.Error(w, fmt.Sprintf("Product ID %s does not exist", newOrder.ProductID), http.StatusBadRequest)
 			return
@@ -214,10 +217,12 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 		_, err = tx.Exec("INSERT INTO orders (id, product_id, quantity, total, created_at) VALUES ($1, $2, $3, $4, $5)",
 			newOrder.ID, newOrder.ProductID, newOrder.Quantity, newOrder.Total, newOrder.CreatedAt)
 		if err != nil {
+			fmt.Printf("Error inserting new order: %v\n", err)
 			tx.Rollback()
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		fmt.Printf("Inserted new order: %+v\n", newOrder)
 	}
 
 	err = tx.Commit()
@@ -226,6 +231,7 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	fmt.Println("Transaction committed")
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newOrders)
