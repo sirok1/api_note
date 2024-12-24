@@ -83,7 +83,7 @@ func createProductHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newProduct.ID = time.Now().String()
+	newProduct.ID = fmt.Sprintf("%d", time.Now().Unix())
 	_, err = db.Exec("INSERT INTO products (id, image_url, name, description, price) VALUES ($1, $2, $3, $4, $5)",
 		newProduct.ID, newProduct.ImageURL, newProduct.Name, newProduct.Description, newProduct.Price)
 	if err != nil {
@@ -214,7 +214,7 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		newOrder.ID = time.Now().String()
+		newOrder.ID = fmt.Sprintf("%d", time.Now().Unix())
 		newOrder.CreatedAt = time.Now()
 		_, err = tx.Exec("INSERT INTO orders (id, product_id, quantity, total, created_at) VALUES ($1, $2, $3, $4, $5)",
 			newOrder.ID, newOrder.ProductID, newOrder.Quantity, newOrder.Total, newOrder.CreatedAt)
