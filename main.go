@@ -147,31 +147,46 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(updatedProduct)
 }
 
-// обработчик для создания заказа
-func createOrderHandler(w http.ResponseWriter, r *http.Request) {
+// обработчик для создания заказов
+func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
 
-	var newOrder Order
-	err := json.NewDecoder(r.Body).Decode(&newOrder)
+	var newOrders []Order
+	err := json.NewDecoder(r.Body).Decode(&newOrders)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	newOrder.ID = time.Now().String()
-	newOrder.CreatedAt = time.Now()
-	_, err = db.Exec("INSERT INTO orders (id, product_id, quantity, total, created_at) VALUES ($1, $2, $3, $4, $5)",
-		newOrder.ID, newOrder.ProductID, newOrder.Quantity, newOrder.Total, newOrder.CreatedAt)
+	tx, err := db.Begin()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	for _, newOrder := range newOrders {
+		newOrder.ID = time.Now().String()
+		newOrder.CreatedAt = time.Now()
+		_, err = tx.Exec("INSERT INTO orders (id, product_id, quantity, total, created_at) VALUES ($1, $2, $3, $4, $5)",
+			newOrder.ID, newOrder.ProductID, newOrder.Quantity, newOrder.Total, newOrder.CreatedAt)
+		if err != nil {
+			tx.Rollback()
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	err = tx.Commit()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newOrder)
+	json.NewEncoder(w).Encode(newOrders)
 }
 
 // обработчик для получения всех заказов
@@ -227,7 +242,7 @@ func main() {
 	http.HandleFunc("/products/delete/", deleteProductHandler)
 
 	http.HandleFunc("/orders", getOrdersHandler)
-	http.HandleFunc("/orders/create", createOrderHandler)
+	http.HandleFunc("/orders/create", createOrdersHandler)
 	http.HandleFunc("/orders/", getOrderByIDHandler)
 
 	fmt.Println("Server is running on port 8080!")
